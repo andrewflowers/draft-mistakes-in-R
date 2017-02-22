@@ -1,0 +1,78 @@
+# Setup
+
+Getting started with R can be frustrating. Actually, no, it’s _guaranteed_ to be frustrating at the beginner. But that’s entirely normal! Take a deep breath, persevere through the initial confusion and know that it gets easier. I promise that you’ll be glad you did.
+
+To make things easier on you, in this chapter we’ll cover the common beginner-level mistakes in just getting your R coding environment in order. (I’ll assume you’ve [installed R](https://cran.r-project.org/mirrors.html).)
+
+First things first: what IDE are using? _“ID-what?”_  you might say. An integrated development environment (IDE) is like a workstation. For your physical workstation, you probably prefer an ergonomic chair or maybe a modern standing desk. A good workstation can make a big difference in your productivity. Ditto for your digital workstation -- so take care in choosing. 
+
+Now, you don’t have to use an IDE to write R code; you can execute R command and write R scripts using the pre-built R framework. But I wouldn’t recommend it.
+
+By far the most-widely used IDE for R is RStudio. If you haven’t yet, go [install Rstudio](https://www.rstudio.com/products/rstudio/download/). RStudio makes writing R less of a headache.
+
+### More than one way to install a package
+
+R is a set of tools. “Base R” -- the pre-installed set of functions like `sum()` and `plot()` -- is like a starter toolbelt, with just a hammer and wrench. It’s the minimal tools you need to get accomplish simple tasks. 
+
+However do anything meaningful in R, you need to other R packages. Specifically, you need to install _and_ load R packages into your R library. Perhaps the most common mistake that R newbies make is loading a package _before_ installing it:
+
+```{r error=TRUE}
+# Failed attempt to load an R package
+
+library(RPACKAGE)  
+
+# NOTE: there is no ‘RPACKAGE’ package
+```
+
+The `library()` function loads an already-installed package into your R environment -- the set of packages you’ve activated at the moment. But for it to work, you first need install it; and most often you do that through `install.packages()`. Let’s start by installing and loading the `tidyverse` package, which is really a collection of packages, with the package name in quotes like `’tidyverse’`. 
+
+The two-step process goes like this:
+
+```{r eval=FALSE}
+# Step 1: Install the package
+install.packages(‘tidyverse’)
+
+# Step 2: load the package
+library(tidyverse) 
+
+# NOTE: quotes are optional for the library() function
+```
+
+You often will use the `install.packages()` function because it taps directly into [CRAN](https://cran.r-project.org/), the Comprehensive R Archive Network, where thousands of R packages are approved and maintained. But this is not the only way to install an R package. 
+
+Another common method is via GitHub, but to do that you first need another R package called `devtools`. So first we’ll install `devtools` the old-fashioned way and then use it’s nifty function to install a second package -- called `bookdown` -- directly via GitHub. 
+
+```{r eval=FALSE}
+# Install and load the devtools package
+install.package(“devtools”)
+library(devtools)
+
+# Install the bookdown package from GitHub
+install_github(bookdown) 
+```
+
+See, you could have installed `bookdown` through CRAN and `install_packages` but the `devtools` package allows you to broaden what R packages you can use.
+
+
+### Working directory confusion
+
+Another common mistake made in R is not being aware of your **working directory**, or the file/folder on your computer from which you’re currently working. R has useful functions -- `getwd()` and `setwd()` -- for discovering and changing your working directory. And I’d also recommend the `dir()` function to list which files are within your current working directory.
+
+
+
+```{r}
+getwd()
+
+dir()
+
+# To move my working directory one folder higher:
+setwd('..')
+getwd()
+```
+
+
+### _The_ biggest R mistake
+
+And that brings up what is probably the biggest R mistake you can make: **not using an R package that suits your problem, or using the wrong package**. Unfortunately, there is no error message for this; you learn it through experience. 
+
+For data science problems, though, a good place to start is the `tidyverse` package we just loaded. We’ll be referencing its various packages throughout this book. But when in doubt, look there first.
