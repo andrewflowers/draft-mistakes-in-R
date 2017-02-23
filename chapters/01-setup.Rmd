@@ -1,5 +1,9 @@
-# Setup
-
+---
+title: "Setup"
+author: "Andrew Flowers"
+date: "2/22/2017"
+output: html_document
+---
 Getting started with R can be frustrating. Actually, no, it’s _guaranteed_ to be frustrating at the beginning But that’s entirely normal! Take a deep breath, persevere through the initial confusion and know that it gets easier. I promise that you’ll be glad you did.
 
 To make things easier on you, in this chapter we’ll cover the common beginner-level mistakes in just getting your R coding environment in order. (I’ll assume you’ve [installed R](https://cran.r-project.org/mirrors.html).)

@@ -1,0 +1,25 @@
+---
+title: "Style"
+author: "Andrew Flowers"
+date: "2/23/2017"
+output: html_document
+---
+
+Let's not kid ourselves: reading code is often terrible. Especially when you wrote it ages ago and we're too rushed (or lazy) to properly clean and document your work. That's why having good style in your R code is so important. 
+
+There are several good R style guides. I can recommend the one used by Google. Hadley Wickham has great advice, too. Reading those guides are a great start. But what I want to focus on here is the importance of readilbity in writing R code **for data science**. 
+
+I'm of the strong opinion that the secret to readable R code comes down to one habit:  liberal use of the `%>%` operator, or the "pipe" operator as its known. The `%>%` orginiated in the `maggrittr` package, but has become a de facto style of the `tidyverse` packages. The `%>%` allows you to write _chained_ R commands. And it avoids ugly nested code. 
+
+Here's how to it works. We'll be using the toy dataset `swiss` (also included in the `datasets` package) showing demgoraphic statistics for some provinces of Switzerland circa 1888.  First, let's make sure the `tidyverse` package is loaded. Then I recommend using the `View()` function to inspect the dataframe in an RStudio window.
+
+```{r}
+library(tidyverse)
+
+# Calculate average fertility rate
+mean(swiss$Fertility)
+
+# Using pipes
+swiss %>% summarize(mean(Fertility))
+```
+
