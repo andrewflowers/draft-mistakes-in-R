@@ -1,8 +1,10 @@
 ---
-title: "Silly things"
+title: 'Chapter 2: Silly things'
 author: "Andrew Flowers"
-date: "2/23/2017"
-output: html_document
+date: "2/27/2017"
+output:
+  pdf_document: default
+  html_document: default
 ---
 Now you should be setup for success in R -- you're using RStudio, can install packages and are working through RStudio projects. But there will still be lots of frustrating quirks to learn about R. And often your mistakes, you'll come to find, are silly little things. In this chapter we'll cover those common screwups in actual R coding
 

@@ -1,8 +1,10 @@
 ---
-title: "Setup"
+title: 'Chapter 1: Setup'
 author: "Andrew Flowers"
-date: "2/22/2017"
-output: html_document
+date: "2/27/2017"
+output:
+  pdf_document: default
+  html_document: default
 ---
 Getting started with R can be frustrating. Actually, no, it’s _guaranteed_ to be frustrating at the beginning But that’s entirely normal! Take a deep breath, persevere through the initial confusion and know that it gets easier. I promise that you’ll be glad you did.
 

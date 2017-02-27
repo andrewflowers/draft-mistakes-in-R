@@ -1,7 +1,7 @@
 ---
 title: "Introduction"
 author: "Andrew Flowers"
-date: "2/20/2017"
+date: "2/27/2017"
 output: html_document
 ---
 ### How To Make Mistakes in R?
@@ -12,4 +12,8 @@ R was built by and for statisticians, so it’s not like other programming langu
 
 That’s why I’ve written this free ebook **How To Make Mistakes In R** for O’Reilly. It’s modeled after the excellent [**How To Make Mistakes In Python**](http://www.oreilly.com/programming/free/how-to-make-mistakes-in-python.csp), by [Mike Pirnat](http://mike.pirnat.com/).
 
-The target audience is all R programmers, from those just starting out all the way to the advanced developers. It’ll cover mistakes in set-up, style, and statistics – and other surprises, too. I’m especially qualified to write this book because I’ve made so many R mistakes in my own work.
+The target audience is all R programmers, from those just starting out all the way to the advanced developers. It’ll cover mistakes in setup, silly things, style no-no's, statistics -- and other surprises, too. I’m especially qualified to write this book because I’ve made so many R mistakes in my own work.
+
+### R is great for data science
+
+The focus of this book is _not_ programming in R as much as it is using R for data science. This is what where R is at its best: interactively exploring and analyzing data.

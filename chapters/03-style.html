@@ -123,27 +123,194 @@ $(document).ready(function () {
 </div>
 
 
-<p>Let’s not kid ourselves: reading code is often terrible. Especially when you wrote it ages ago and we’re too rushed (or lazy) to properly clean and document your work. That’s why having good style in your R code is so important.</p>
-<p>There are several good R style guides. I can recommend the one used by Google. Hadley Wickham has great advice, too. Reading those guides are a great start. But what I want to focus on here is the importance of readilbity in writing R code <strong>for data science</strong>.</p>
+<p>Let’s not kid ourselves: reading code is often terrible. Especially when you wrote it ages ago and were too rushed (or lazy) to properly clean and document your work. That’s why having good style is so important.</p>
+<p>There are several good R style guides. I can recommend <a href="https://google.github.io/styleguide/Rguide.xml">Google’s R Style Guide</a>. Hadley Wickham has <a href="http://adv-r.had.co.nz/Style.html">great advice</a>, too. Reading those guides is a great start. But what I want to focus on here is the importance of <em>readability</em> in writing R code, specifically <strong>for data science</strong>.</p>
+<div id="embracing-the-power-of-piping-with" class="section level3">
+<h3>Embracing the power of piping with <code>%&gt;%</code></h3>
 <p>I’m of the strong opinion that the secret to readable R code comes down to one habit: liberal use of the <code>%&gt;%</code> operator, or the “pipe” operator as its known. The <code>%&gt;%</code> orginiated in the <code>maggrittr</code> package, but has become a de facto style of the <code>tidyverse</code> packages. The <code>%&gt;%</code> allows you to write <em>chained</em> R commands. And it avoids ugly nested code.</p>
-<p>Here’s how to it works. We’ll be using the toy dataset <code>swiss</code> (also included in the <code>datasets</code> package) showing demgoraphic statistics for some provinces of Switzerland circa 1888. First, let’s make sure the <code>tidyverse</code> package is loaded. Then I recommend using the <code>View()</code> function to inspect the dataframe in an RStudio window.</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr</code></pre>
-<pre><code>## Conflicts with tidy packages ----------------------------------------------</code></pre>
-<pre><code>## filter(): dplyr, stats
-## lag():    dplyr, stats</code></pre>
-<pre class="r"><code># Calculate average fertility rate
-mean(swiss$Fertility)</code></pre>
-<pre><code>## [1] 70.14255</code></pre>
-<pre class="r"><code># Using pipes
-swiss %&gt;% summarize(mean(Fertility))</code></pre>
-<pre><code>##   mean(Fertility)
-## 1        70.14255</code></pre>
+<p>Here’s how to it works. We’ll be using the data from the pro basketball (my favorite sport). <a href="fivethirtyeight.com">FiveThirtyEight</a>, my old employer, was fond of calculating Elo ratings for sports teams. Elo ratings originated in chess, and are a simple way of measuring quality. You can download the Elo ratings of <em>every</em> NBA team, before and after <em>every</em> NBA game, from the 1947 season through the 2015 season. The data is online <a href="https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-elo/nbaallelo.csv">here</a> (and can also be found on this book’s <a href="https://github.com/andrewflowers/how-to-make-mistakes-in-R">GitHub repository</a>).</p>
+<p>First, let’s make sure the <code>tidyverse</code> package is loaded. Next, we’ll read the data into R using the <code>read_csv</code> function from the <code>readr</code> package. This might take your computer some time – it’s over 126,000 games! Then we’ll calculate the average post-game Elo rating for all teams in the dataset (the pre-game elo rating is <code>elo_i</code>, the post-game rating is <code>elo_n</code>). I’ll show you two ways to do this: one straightforward way using <code>mean()</code> and anothering using the pipe (<code>%&gt;%</code>) operator.</p>
+<pre class="r"><code>library(tidyverse)
+
+# Load data
+nba_elo_data &lt;- read_csv(&quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-elo/nbaallelo.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_character(),
+##   gameorder = col_integer(),
+##   `_iscopy` = col_integer(),
+##   year_id = col_integer(),
+##   seasongame = col_integer(),
+##   is_playoffs = col_integer(),
+##   pts = col_integer(),
+##   elo_i = col_double(),
+##   elo_n = col_double(),
+##   win_equiv = col_double(),
+##   opp_pts = col_integer(),
+##   opp_elo_i = col_double(),
+##   opp_elo_n = col_double(),
+##   forecast = col_double()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code># Calculate average Elo rating over time
+mean(nba_elo_data$elo_n)</code></pre>
+<pre><code>## [1] 1495.236</code></pre>
+<pre class="r"><code># Do the same, using pipes
+nba_elo_data %&gt;% summarize(avg_elo = mean(elo_n))</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##    avg_elo
+##      &lt;dbl&gt;
+## 1 1495.236</code></pre>
+<p><em>Wait, what? Piping requires writing more code?!</em></p>
+<p>Hang on a second, this example is just meant to illustrate how the <code>%&gt;%</code> operator works. Here the pipe is passing the <code>nba_elo_data</code> dataframe to the <code>summarize()</code> function (from the <code>dplyr</code> package). Not having to specify the dataframe you’re operating on for each function will come in handy when you’re calling multiple functions.</p>
+<p>Let’s continue to work with the <code>nba_elo_data</code> dataset, and continue using basic <code>dplyr</code> functions but writing code with and without pipes. First, let’s calculate the highest Elo rating for each team – or franchise, really – by grouping each game according to the <code>fran_id</code> column.</p>
+<pre class="r"><code>library(tidyverse)
+
+# Code without pipes
+summarize(group_by(nba_elo_data, fran_id), best_elo = max(elo_n))</code></pre>
+<pre><code>## # A tibble: 53 × 2
+##      fran_id best_elo
+##        &lt;chr&gt;    &lt;dbl&gt;
+## 1  Baltimore 1513.935
+## 2    Bombers 1467.990
+## 3      Bucks 1757.149
+## 4      Bulls 1853.104
+## 5   Capitols 1563.444
+## 6  Cavaliers 1765.244
+## 7    Celtics 1815.692
+## 8   Clippers 1743.113
+## 9   Colonels 1672.633
+## 10   Condors 1499.175
+## # ... with 43 more rows</code></pre>
+<pre class="r"><code># Code with pipes
+nba_elo_data %&gt;% 
+  group_by(fran_id) %&gt;% 
+  summarize(best_elo = max(elo_n))</code></pre>
+<pre><code>## # A tibble: 53 × 2
+##      fran_id best_elo
+##        &lt;chr&gt;    &lt;dbl&gt;
+## 1  Baltimore 1513.935
+## 2    Bombers 1467.990
+## 3      Bucks 1757.149
+## 4      Bulls 1853.104
+## 5   Capitols 1563.444
+## 6  Cavaliers 1765.244
+## 7    Celtics 1815.692
+## 8   Clippers 1743.113
+## 9   Colonels 1672.633
+## 10   Condors 1499.175
+## # ... with 43 more rows</code></pre>
+<p><em>Ahhh</em>, see? The code with pipes is far easier on the eye. We can take this point a step further: let’s filter out all the games before 1980 and then sort the resulting dataframe from highest to lowest peak franchine Elo rating. Notice how ugly the nested code becomes when the pipes aren’t used.</p>
+<pre class="r"><code>library(tidyverse)
+
+# Code without pipes
+arrange(summarize(group_by(filter(nba_elo_data, year_id &gt;= 1980), fran_id), best_elo = max(elo_n)), desc(best_elo))</code></pre>
+<pre><code>## # A tibble: 30 × 2
+##      fran_id best_elo
+##        &lt;chr&gt;    &lt;dbl&gt;
+## 1      Bulls 1853.104
+## 2   Warriors 1822.288
+## 3    Celtics 1815.692
+## 4     Lakers 1789.993
+## 5    Pistons 1788.091
+## 6      Magic 1781.763
+## 7     Sixers 1777.069
+## 8       Heat 1774.346
+## 9  Mavericks 1773.131
+## 10     Spurs 1771.188
+## # ... with 20 more rows</code></pre>
+<pre class="r"><code># Code with pipes
+nba_elo_data %&gt;% 
+  filter(year_id &gt;= 1980) %&gt;% 
+  group_by(fran_id) %&gt;% 
+  summarize(best_elo = max(elo_n)) %&gt;% 
+  arrange(desc(best_elo))</code></pre>
+<pre><code>## # A tibble: 30 × 2
+##      fran_id best_elo
+##        &lt;chr&gt;    &lt;dbl&gt;
+## 1      Bulls 1853.104
+## 2   Warriors 1822.288
+## 3    Celtics 1815.692
+## 4     Lakers 1789.993
+## 5    Pistons 1788.091
+## 6      Magic 1781.763
+## 7     Sixers 1777.069
+## 8       Heat 1774.346
+## 9  Mavericks 1773.131
+## 10     Spurs 1771.188
+## # ... with 20 more rows</code></pre>
+<p>The fist bit of code is so messy and hard to understand that I made a mistake coding this example!</p>
+<p>Piping is the key to clear, readable R code for data science.</p>
+</div>
+<div id="the-right-match" class="section level3">
+<h3>The right match</h3>
+<p>Another common R stylistic pitfall is misuing the <code>match()</code> function, either by not using the more readable <code>%in%</code> operator or by using it to join data between different dataframes.</p>
+<p>The <code>match()</code> function is very useful. It takes as its input two vectors and returns the indices where matches of the elements in the first vector (if any) are found in the elements of the second vector.</p>
+<pre class="r"><code>large_cities &lt;- c(&quot;New York&quot;, &quot;Los Angeles&quot;, &quot;Chicago&quot;, &quot;Houston&quot;, &quot;Philadelphia&quot;, &quot;Phoenix&quot;)
+
+warm_cities &lt;- c(&quot;Miami&quot;, &quot;New Orleans&quot;, &quot;Houston&quot;, &quot;Phoenix&quot;, &quot;San Diego&quot;, &quot;Los Angeles&quot;)
+
+match(large_cities, warm_cities)</code></pre>
+<pre><code>## [1] NA  6 NA  3 NA  4</code></pre>
+<pre class="r"><code>match(warm_cities, large_cities)</code></pre>
+<pre><code>## [1] NA NA  4  6 NA  2</code></pre>
+<p>In many cases, though, you’ll want to use the <code>%in%</code> operator for matching, rather than the <code>match()</code> function itself, because it’s aesthetically nicer. But the <code>%in%</code> operator works a little differently, returning a <em>logical</em> vector, with <code>TRUE</code>/<code>FALSE</code> as to whether there is a match at all.</p>
+<pre class="r"><code>large_cities &lt;- c(&quot;New York&quot;, &quot;Los Angeles&quot;, &quot;Chicago&quot;, &quot;Houston&quot;, &quot;Philadelphia&quot;, &quot;Phoenix&quot;)
+
+warm_cities &lt;- c(&quot;Miami&quot;, &quot;New Orleans&quot;, &quot;Houston&quot;, &quot;Phoenix&quot;, &quot;San Diego&quot;, &quot;Los Angeles&quot;)
+
+large_cities %in% warm_cities</code></pre>
+<pre><code>## [1] FALSE  TRUE FALSE  TRUE FALSE  TRUE</code></pre>
+<p>Using the <code>match()</code> function to join data to a dataframe is a mistake I often made in my early days of R coding. Taking two dataframes – <code>birthdays</code> and <code>cities</code> – and joining the later data by the <code>name</code> column. Here is the ugly way to do: using <code>match()</code> to subset out the <code>city</code> column in the correct order for the <code>birthdays</code> dataframe:</p>
+<pre class="r"><code>birthdays &lt;- data.frame(
+  name = c('Steve', 'Laura', 'Kim'),
+  birthday = c('2/17/71', '10/4/83', '6/28/66')
+)
+
+cities &lt;- data.frame(
+  name = c('Laura', 'Kim', 'Steve'),
+  city = c('Chicago', 'Houston', 'Seattle')
+)
+
+# Find match between two dataframes according to name column
+match(birthdays$name, cities$name)</code></pre>
+<pre><code>## [1] 3 1 2</code></pre>
+<pre class="r"><code># Use that match to join city data to birthdays dataframe
+birthdays$city &lt;- cities[match(birthdays$name, cities$name),]$city
+
+birthdays</code></pre>
+<pre><code>##    name birthday    city
+## 1 Steve  2/17/71 Seattle
+## 2 Laura  10/4/83 Chicago
+## 3   Kim  6/28/66 Houston</code></pre>
+<p>Ugh. That was terrible. Don’t do this. Why? You can easily flip the order of the two vectors in your match function and it will it return the data sorted incrrectly. But, more importantly, there is a stylically superior way to join data – using the join-functions from the <code>dplyr</code> package.</p>
+<p>Here I’ll use the <code>left_join()</code> function to extract join the <code>city</code> column from <code>cities</code> to the <code>birthdays</code> dataframe.</p>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: 'dplyr'</code></pre>
+<pre><code>## The following objects are masked from 'package:stats':
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>birthdays &lt;- data.frame(
+  name = c('Steve', 'Laura', 'Kim'),
+  birthday = c('2/17/71', '10/4/83', '6/28/66')
+)
+
+cities &lt;- data.frame(
+  name = c('Laura', 'Kim', 'Steve'),
+  city = c('Chicago', 'Houston', 'Seattle')
+)
+
+birthdays %&gt;% 
+  left_join(cities, by = 'name')</code></pre>
+<pre><code>##    name birthday    city
+## 1 Steve  2/17/71 Seattle
+## 2 Laura  10/4/83 Chicago
+## 3   Kim  6/28/66 Houston</code></pre>
+</div>
 
 
 
