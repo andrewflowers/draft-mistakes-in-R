@@ -1,0 +1,13 @@
+---
+title: "Chapter 4: Stats"
+author: "Andrew Flowers"
+date: "3/6/2017"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+R is built to do stats. For my money, it's the best data analysis tool their is. But users commonly make mistakes doing statistics in R. Here are some and how to avoid them.
+
+### 

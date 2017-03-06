@@ -1,0 +1,6 @@
+---
+title: "How To Make Mistakes In R"
+site: bookdown::bookdown_site
+output:
+  bookdown::gitbook: default
+---
