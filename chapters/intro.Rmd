@@ -2,7 +2,12 @@
 title: "Introduction"
 author: "Andrew Flowers"
 date: "2/27/2017"
-output: html_document
+bookdown::gitbook:
+    lib_dir: assets
+    split_by: section
+bookdown::pdf_book:
+    keep_tex: yes
+documentclass: book
 ---
 ### How To Make Mistakes in R?
  

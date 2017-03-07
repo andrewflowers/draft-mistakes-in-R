@@ -3,6 +3,7 @@ title: 'Chapter 3: Style'
 author: "Andrew Flowers"
 date: "2/27/2017"
 output:
+  word_document: default
   pdf_document: default
   html_document: default
 ---

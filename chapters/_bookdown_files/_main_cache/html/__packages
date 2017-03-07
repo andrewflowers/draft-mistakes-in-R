@@ -1,0 +1,10 @@
+base
+broom
+bookdown
+readr
+tidyverse
+ggplot2
+tibble
+tidyr
+purrr
+dplyr
