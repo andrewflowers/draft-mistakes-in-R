@@ -1,0 +1,9 @@
+---
+title: "How To Make Mistakes In R"
+author: "Andrew Flowers"
+site: bookdown::bookdown_site
+documentclass: book
+output:
+  bookdown::gitbook: default
+  bookdown::pdf_book: default
+---

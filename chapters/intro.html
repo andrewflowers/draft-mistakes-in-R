@@ -130,10 +130,22 @@ $(document).ready(function () {
 <h1>R is great, but it’s also weird</h1>
 <p>R was built by and for statisticians, so it’s not like other programming languages. Its idiosyncrasies can be a source of deep frustration for beginners. But I’d argue there is no better tool for data analysis.</p>
 <p>That’s why I’ve written this free ebook <strong>How To Make Mistakes In R</strong> for O’Reilly. It’s modeled after the excellent <a href="http://www.oreilly.com/programming/free/how-to-make-mistakes-in-python.csp"><strong>How To Make Mistakes In Python</strong></a>, by <a href="http://mike.pirnat.com/">Mike Pirnat</a>.</p>
-<p>The target audience is all R programmers, from those just starting out all the way to the advanced developers. It’ll cover mistakes in setup, silly things, style no-no’s, statistics – and other surprises, too. I’m especially qualified to write this book because I’ve made so many R mistakes in my own work.</p>
+<p>The target audience is all R programmers, from those just starting out all the way to the advanced developers. It’ll cover mistakes in setup, silly things, style no-no’s, statistics and surprises, too. I’m especially qualified to write this book because I’ve made so many R mistakes in my own work.</p>
 <div id="r-is-great-for-data-science" class="section level3">
 <h3>R is great for data science</h3>
-<p>The focus of this book is <em>not</em> programming in R as much as it is using R for data science. This is what where R is at its best: interactively exploring and analyzing data.</p>
+<p>The focus of this book is <em>not</em> on programming in R as much as it is using R for data science. This is where R is at its best: an environment for interactively exploring and analyzing data.</p>
+<p>Thus we’ll often be working with real datasets. To access those datasets, go to this book’s GitHub <a href="https://github.com/andrewflowers/how-to-make-mistakes-in-R">repository</a>.</p>
+</div>
+<div id="what-to-do-when-you-make-a-mistake-in-r" class="section level3">
+<h3>What to do when you make a mistake in R?</h3>
+<p>Making mistakes in programming is perfectly normal. It’s to be expected, really, in the course of anyone’s workflow. But how should you react when you see an R tells you that you’ve made an error and you don’t understand the error message.</p>
+<p>The first step should be <strong>Google the error message</strong>. Yes, that’s my advice. As simple as it sounds, many programmers – especially beginners – go hunting for answers by asking others or searching R documentation. They don’t go to the source of their problem: the error message.</p>
+<pre class="r"><code>sum(1, 2, 'hello')</code></pre>
+<pre><code>## Error in sum(1, 2, &quot;hello&quot;): invalid 'type' (character) of argument</code></pre>
+<p>And often by Googling the error message you’ll end up at <a href="stackoverflow.com">Stackoverflow</a>, the live-saving website where programmers post questions and (sometimes) get answers. Chances are: someone has already made your mistake in R before. And, hopefully, there’s an answer at Stackoverflow.</p>
+<p>But what if you’re not getting an explicit error message from R, but your code isn’t working as you expect. A simple place to start is to read R documentation about the functions your using. Just type into the R console your function name preface with a <code>?</code> and the function documentation will appear.</p>
+<pre class="r"><code>?sum</code></pre>
+<p>After Googling and searching Stackoverflow, and examiming R documentation, other places to find for answers are <a href="github.com">GitHub</a> and <a href="twitter.com">Twitter</a>. The <code>#rstats</code> hash tag on Twitter collects lots of useful conversations about R.</p>
 </div>
 </div>
 

@@ -109,10 +109,19 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="0.0.9" data-path="intro.html"><a href="#missing-values"><i class="fa fa-check"></i><b>0.0.9</b> Missing values</a></li>
 <li class="chapter" data-level="0.0.10" data-path="intro.html"><a href="#embracing-the-power-of-piping-with"><i class="fa fa-check"></i><b>0.0.10</b> Embracing the power of piping with <code>%&gt;%</code></a></li>
 <li class="chapter" data-level="0.0.11" data-path="intro.html"><a href="#the-right-match"><i class="fa fa-check"></i><b>0.0.11</b> The right match</a></li>
-<li class="chapter" data-level="0.0.12" data-path="intro.html"><a href="#section"><i class="fa fa-check"></i><b>0.0.12</b> </a></li>
-<li class="chapter" data-level="0.0.13" data-path="intro.html"><a href="#how-to-make-mistakes-in-r"><i class="fa fa-check"></i><b>0.0.13</b> How To Make Mistakes in R?</a></li>
+<li class="chapter" data-level="0.0.12" data-path="intro.html"><a href="#dont-regress-when-regressing"><i class="fa fa-check"></i><b>0.0.12</b> Don’t regress when regressing</a></li>
+<li class="chapter" data-level="0.0.13" data-path="intro.html"><a href="#use-broom-to-tidy-your-model-outputs"><i class="fa fa-check"></i><b>0.0.13</b> Use <code>broom</code> to tidy your model outputs</a></li>
+<li class="chapter" data-level="0.0.14" data-path="intro.html"><a href="#logitstic-troubles"><i class="fa fa-check"></i><b>0.0.14</b> Logitstic troubles</a></li>
+<li class="chapter" data-level="0.0.15" data-path="intro.html"><a href="#ggplot2-screwups"><i class="fa fa-check"></i><b>0.0.15</b> ggplot2 screwups</a></li>
+<li class="chapter" data-level="0.0.16" data-path="intro.html"><a href="#function-masking"><i class="fa fa-check"></i><b>0.0.16</b> Function masking</a></li>
+<li class="chapter" data-level="0.0.17" data-path="intro.html"><a href="#annoying-levels"><i class="fa fa-check"></i><b>0.0.17</b> Annoying levels</a></li>
+<li class="chapter" data-level="0.0.18" data-path="intro.html"><a href="#escape-characters"><i class="fa fa-check"></i><b>0.0.18</b> Escape characters</a></li>
+<li class="chapter" data-level="0.0.19" data-path="intro.html"><a href="#lists-and-double-bracket-notation"><i class="fa fa-check"></i><b>0.0.19</b> Lists and double-bracket notation <code>[[]]</code></a></li>
+<li class="chapter" data-level="0.0.20" data-path="intro.html"><a href="#how-to-make-mistakes-in-r"><i class="fa fa-check"></i><b>0.0.20</b> How To Make Mistakes in R?</a></li>
 <li class="chapter" data-level="1" data-path="intro.html"><a href="#r-is-great-but-its-also-weird"><i class="fa fa-check"></i><b>1</b> R is great, but it’s also weird</a><ul>
 <li class="chapter" data-level="1.0.1" data-path="intro.html"><a href="#r-is-great-for-data-science"><i class="fa fa-check"></i><b>1.0.1</b> R is great for data science</a></li>
+<li class="chapter" data-level="1.0.2" data-path="intro.html"><a href="#what-to-do-when-you-make-a-mistake-in-r"><i class="fa fa-check"></i><b>1.0.2</b> What to do when you make a mistake in R?</a></li>
+<li class="chapter" data-level="1.0.3" data-path="intro.html"><a href="#good-luck-and-keep-at-it."><i class="fa fa-check"></i><b>1.0.3</b> Good luck and keep at it.</a></li>
 </ul></li>
 </ul>
 
@@ -140,10 +149,26 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1><span class="header-section-number">1</span> R is great, but it’s also weird</h1>
 <p>R was built by and for statisticians, so it’s not like other programming languages. Its idiosyncrasies can be a source of deep frustration for beginners. But I’d argue there is no better tool for data analysis.</p>
 <p>That’s why I’ve written this free ebook <strong>How To Make Mistakes In R</strong> for O’Reilly. It’s modeled after the excellent <a href="http://www.oreilly.com/programming/free/how-to-make-mistakes-in-python.csp"><strong>How To Make Mistakes In Python</strong></a>, by <a href="http://mike.pirnat.com/">Mike Pirnat</a>.</p>
-<p>The target audience is all R programmers, from those just starting out all the way to the advanced developers. It’ll cover mistakes in setup, silly things, style no-no’s, statistics – and other surprises, too. I’m especially qualified to write this book because I’ve made so many R mistakes in my own work.</p>
+<p>The target audience is all R programmers, from those just starting out all the way to the advanced developers. It’ll cover mistakes in setup, silly things, style no-no’s, statistics and surprises, too. I’m especially qualified to write this book because I’ve made so many R mistakes in my own work.</p>
 <div id="r-is-great-for-data-science" class="section level3">
 <h3><span class="header-section-number">1.0.1</span> R is great for data science</h3>
-<p>The focus of this book is <em>not</em> programming in R as much as it is using R for data science. This is what where R is at its best: interactively exploring and analyzing data.</p>
+<p>The focus of this book is <em>not</em> on programming in R as much as it is using R for data science. This is where R is at its best: an environment for interactively exploring and analyzing data.</p>
+<p>Thus we’ll often be working with real datasets. To access those datasets, go to this book’s GitHub <a href="https://github.com/andrewflowers/how-to-make-mistakes-in-R">repository</a>.</p>
+</div>
+<div id="what-to-do-when-you-make-a-mistake-in-r" class="section level3">
+<h3><span class="header-section-number">1.0.2</span> What to do when you make a mistake in R?</h3>
+<p>Making mistakes in programming is perfectly normal. It’s to be expected, really, in the course of anyone’s workflow. But how should you react when you see an R tells you that you’ve made an error and you don’t understand the error message.</p>
+<p>The first step should be <strong>Google the error message</strong>. Yes, that’s my advice. As simple as it sounds, many programmers – especially beginners – go hunting for answers by asking others or searching R documentation. They don’t go to the source of their problem: the error message.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="st">&#39;hello&#39;</span>)</code></pre></div>
+<pre><code>## Error in sum(1, 2, &quot;hello&quot;): invalid &#39;type&#39; (character) of argument</code></pre>
+<p>And often by Googling the error message you’ll end up at <a href="stackoverflow.com">Stackoverflow</a>, the live-saving website where programmers post questions and (sometimes) get answers. Chances are: someone has already made your mistake in R before. And, hopefully, there’s an answer at Stackoverflow.</p>
+<p>But what if you’re not getting an explicit error message from R, but your code isn’t working as you expect. A simple place to start is to read R documentation about the functions your using. Just type into the R console your function name preface with a <code>?</code> and the function documentation will appear. Like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">?sum</code></pre></div>
+<p>After Googling and searching Stackoverflow, and examiming R documentation, other places to find for answers are <a href="github.com">GitHub</a> and <a href="twitter.com">Twitter</a>. The <code>#rstats</code> hash tag on Twitter collects lots of useful conversations about R.</p>
+</div>
+<div id="good-luck-and-keep-at-it." class="section level3">
+<h3><span class="header-section-number">1.0.3</span> Good luck and keep at it.</h3>
+<p>Mistakes are inevitable in programming. Don’t think you’re stupid. Don’t think your frustration is unusal. Frustration is to be expected. Nothing is wrong with you. You just need to keep at it.</p>
 
 </div>
 </div>

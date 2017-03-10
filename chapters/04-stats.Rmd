@@ -3,20 +3,18 @@ title: 'Chapter 4: Stats'
 author: "Andrew Flowers"
 date: "3/6/2017"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
   word_document: default
 ---
-
 R is built to do stats. For my money, it's the best data analysis tool there is. But users commonly make mistakes doing statistics in R. Here are some and how to avoid them.
 
-### Regressing when regressing
+### Don't regress when regressing
 
-Regression analysis is a stable method for data science. In R, you'll often use the workhorse `lm()` function for doing linear regression and `glm()` for logistic regression and more advanced techniques. 
+Regression analysis is a staple method in data science. In R, you'll often use the workhorse `lm()` function for doing linear regression and `glm()` for logistic regression and more advanced techniques. 
 
-Let's load the `nba_elo_data.csv` data again and run some regress a team's elo rating at the start of a game (`elo_i`) against the point margin of their games (which we'll create by subracting `pts` from `opp_pts`). 
-
-```{r cache = TRUE}
+Let's load the `nba_elo_data.csv` data again and run a regressions on a team's Elo rating at the start of a game (`elo_i`) against its point margin (which we'll create by subtracting `pts` from `opp_pts`, using the `mutate()` function). 
+```{r cache = TRUE, message = FALSE}
 library(tidyverse)
 
 # Load data
@@ -28,12 +26,9 @@ new_elo_data <- nba_elo_data %>%
 
 lm(data = new_elo_data, formula = pts_margin ~ elo_i)
 ```
-
-
 Not surprising: an NBA team's pre-game Elo rating is _positively_ associated with its margin of victory.
 
 But the output, `elo_regression`, is hard to read, And it masks more detailed output from the regression.  We'll assign the `lm()` output (which is a model object) to the variable named `elo_regression`. Using the customary `summary()` function on the model object reveals more details -- but it's still hard to decipher.
-
 ```{r cache = TRUE}
 elo_regression <- lm(data = new_elo_data, formula = pts_margin ~ elo_i)
 
@@ -44,7 +39,7 @@ elo_regression
 summary(elo_regression)
 ```
 
-Now let's actually use the regression output. A common beginner mistake is to make predictions from a regression by _directly_ accessing the model coefficients and then _manually_ calculcating the estimator (or "y-hat").
+Now let's actually use the regression output. A common beginner mistake is to make predictions from a regression by _directly_ accessing the model coefficients and then _manually_ calculating the estimator (or "y-hat").
 
 ```{r cache = TRUE}
 
@@ -56,7 +51,7 @@ example_team_elo <- 1500
 coef(elo_regression)[1] + (coef(elo_regression)[2] * example_team_elo)
 ```
 
-This is a big no-no. It's far more simple -- and less error-prone -- to use the `predict()` function instead. Under this workflow, you provide `predict()` with two necessary inputs: (1) the model object you've generated from `lm()` and (2) a dataframe of new data to make predictions on (with the paramaeter name `newdata`). Here's a better way to make a prediction on the point margin of an NBA team with a 1500 Elo rating.
+This is a big no-no. It's far more simple -- and less error-prone -- to use the `predict()` function instead. Under this workflow, you'd provide `predict()` with two necessary inputs: (1) the model object you've generated from `lm()` and (2) a dataframe of new data to make predictions on (with the paramaeter name `newdata`). Here's a better way to make a prediction on the point margin of an NBA team with a 1500 Elo rating.
 
 ```{r cache = TRUE}
 
@@ -67,6 +62,119 @@ new_data <- data.frame(elo_i = 1500)
 predict(elo_regression, newdata = new_data)
 ```
 
-### Use `broom` to tidy your model outpus
+### Use `broom` to tidy your model outputs
 
-There is an even better workflow for cleaning working with R models -- especially when you're creating a lot of them at once. The wonderful package `broom`, by David Robinson, is here to save you. What `broom` does is simple by powerful: It stores model output data in a standardized data frame. 
+There is an even better workflow for working with the output of R regression models, especially when you're creating a lot of them at once. The wonderful package `broom`, by David Robinson, is here to save you. What `broom` does is simple but powerful: It stores model output data in a standardized data frame. 
+
+What if you want to extract the p-value from your regression? When using `summary()` on a model object, what's returned is OK enough to read, but a terrible format _to use_. The `broom` package has a useful function, `tidy()`, which nicely organizes the terms of your regression, their estiamtes and standard errors, test statistics and p-values -- all in one place.
+
+```{r cache = TRUE}
+library(broom)
+
+tidy(elo_regression)
+```
+
+This is especially useful if you're testing a lot of regression models. Let's group each NBA franchise (using `fran_id`) and run a regression the same regression as before. 
+
+To do this for each franchise, we'll use the helpful `do()` function. First, though, we'll run the regression using `lm()` and store the regression outputs in a dataframe using `tidy()`. What results is a clean dataframe for all 53 franchises in NBA history. One clarifying note: the `.` used to specify the dataset for `lm()` to use refers to the dataframe being piped (`%>%`) to it, or `new_elo_data`.
+
+```{r cache = TRUE}
+new_elo_data %>% 
+  group_by(fran_id) %>% 
+  do(tidy(lm(formula = pts_margin ~ elo_i, data = .)))
+```
+
+### Logitstic troubles
+
+Logistic regressions are another source of R frustration. A beginner mistake is to think you can just use `lm()`. You can't. 
+
+Let's try to run a logistic regression on how an NBA team's pre-game Elo rating predicts the likehlihood they'll win the game (`game_result`). It's going to fail, though, because we're using `lm()`.
+
+```{r error = TRUE}
+lm(data=new_elo_data, formula = game_result ~ elo_i)
+```
+
+Maybe R's most powerful function is `glm()`, which stands for generalized linear model. And it's this you'll need for a logistic regression. Also requried is that you specifcy the `family` parameter within the `glm()` function. A common setting for logistic regression is "binmoial," as logistic is measuring outcomes like TRUE/FALSE, Democratc/Republican, Win/Loss. 
+
+But your data must be properly formatted first. Notice how this otherwise correct specfication fails. (Hint: it's because `game_result` is currently a character vector with "W" or "L".)
+
+```{r error= TRUE}
+glm(data=new_elo_data, formula = game_result ~ elo_i, family = "binomial")
+```
+
+Let's change that to be 1s and 0s, and then re-run the regression.
+
+```{r cache=TRUE}
+library(tidyverse)
+
+elo_data_logit <- new_elo_data %>% 
+  mutate(game_result_logit = ifelse(game_result == "W", 1, 0))
+
+glm(data=elo_data_logit, formula = game_result_logit ~ elo_i, family = "binomial")
+```
+
+Hooray! It worked.
+
+### ggplot2 screwups
+
+Hadley Wickham's `ggplot2` is a gem. The pacakge allows R coders to create elegant graphics through an approach that utilizes a "grammar of graphics." I won't cover all the intricacies of `ggplot2` here, but I'll touch on some common mistakes I've made.
+
+Perhaps the most common `ggplot2` mistake is forgetting where to place the `+` symbol that "chains" together ggplot commands (often called "layers"). (Hadley Wickham [cites](http://r4ds.had.co.nz/data-visualisation.html#common-problems) this as a common mistake in his fantastic book [R for Data Science](http://r4ds.had.co.nz/).) The error occurs because the `+` symbol should be placed at the _end_ of the line of code.
+
+```{r error=TRUE}
+library(ggplot2)
+
+# Incorrect
+ggplot(data = mtcars, aes(x = wt, y = mpg))
+  + geom_point()
+
+# Correct 
+ggplot(data = mtcars, aes(x = wt, y = mpg)) +
+  geom_point()
+```
+
+Beyond that silly mistake, I've made plenty of other ones in `ggplot2`. A common one involves the `geom_bar()` layer for making bar plots. 
+
+Here we're going to create a dataframe of each NBA franchise's peak Elo rating (similar to what we did in chapter 3). We'll then use this dataframe, `fran_max_elo`, to make a simple bar chart. (For clarity, we'll flip the x and y coordinates of the chart with the `coord_flip()` function.) All this will be chained together with the `+` symbol and, finally, plotted with `geom_bar()`. But, by default, it won't work.
+
+```{r cache = TRUE, error = TRUE}
+fran_max_elo <- nba_elo_data %>% 
+  filter(year_id >= 1980) %>% 
+  group_by(fran_id) %>% 
+  summarize(best_elo = max(elo_n)) %>% 
+  arrange(desc(best_elo))
+
+ggplot(data = fran_max_elo, aes(x = fran_id, y = best_elo)) +
+  coord_flip() +
+  geom_bar()
+```
+
+The missing ingredient here is changing the `stat` paramaeter of the `geom_bar()` layer to be set to "identity". This insures that the bars are not counting, or aggregating, the variable supplied for y -- but instead are interpreting it literally.
+
+```{r error = TRUE}
+ggplot(data = fran_max_elo, aes(x = fran_id, y=best_elo)) +
+  coord_flip() +
+  geom_bar(stat="identity")
+```
+
+
+Another common mistake is to trust `ggplot2` default settings when using the `geom_smooth()` or `stat_smooth()` functions. Without any additional specification, it will layer on your graphic a Loess curve. To instead get a linear line of best fit, you must specify with `method="lm"`. 
+
+Also, notice in the code below I stop specifying the `data` parameter in the `ggplot` base layer. Instead, per my style suggestions in chapter 3, I use the `%>%` operator. You'll also pick up the interchanging symbols, placed at the end of the code line.
+
+```{r, cache = TRUE}
+library(tidyverse)
+
+# Loess curve by default
+mtcars %>% 
+  ggplot(aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth()
+
+
+# Linear smoothing
+mtcars %>% 
+  ggplot(aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth(method="lm")
+```
