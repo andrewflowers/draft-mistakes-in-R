@@ -1,0 +1,142 @@
+---
+title: 'Style'
+author: "Andrew Flowers"
+date: "2/27/2017"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+# Style
+
+Let's not kid ourselves: reading code is often terrible. Especially when you wrote it ages ago and were too rushed (or lazy) to properly clean and document your work. That's why having good style is so important. 
+
+There are several good R style guides. I can recommend [Google's R Style Guide](https://google.github.io/styleguide/Rguide.xml). Hadley Wickham has [great advice](http://adv-r.had.co.nz/Style.html), too. Reading those guides is a great start. But what I want to focus on here is the importance of _readability_ in writing R code, specifically **for data science**. 
+
+### Embracing the power of piping with `%>%`
+
+I'm of the strong opinion that the secret to readable R code comes down to one habit:  liberal use of the `%>%` operator, or the "pipe" operator as its known. The `%>%` orginiated in the `maggrittr` package, but has become a de facto style of the `tidyverse` packages. The `%>%` allows you to write _chained_ R commands. And it avoids ugly nested code. 
+
+Here's how to it works. We'll be using the data from the pro basketball (my favorite sport). [FiveThirtyEight](fivethirtyeight.com), my old employer, was fond of calculating Elo ratings for sports teams. Elo ratings originated in chess, and are a simple way of measuring quality. You can download the Elo ratings of _every_ NBA team, before and after _every_ NBA game, from the 1947 season through the 2015 season. The data is online [here](https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-elo/nbaallelo.csv) (and can also be found on this book's [GitHub repository](https://github.com/andrewflowers/how-to-make-mistakes-in-R)). 
+
+First, let's make sure the `tidyverse` package is loaded. Next, we'll read the data into R using the `read_csv` function from the `readr` package. This might take your computer some time -- it's over 126,000 games! Then we'll calculate the average post-game Elo rating for all teams in the dataset (the pre-game elo rating is `elo_i`, the post-game rating is `elo_n`). I'll show you two ways to do this: one straightforward way using `mean()` and anothering using the pipe (`%>%`) operator.
+
+```{r cache=TRUE}
+library(tidyverse)
+
+# Load data
+nba_elo_data <- read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-elo/nbaallelo.csv")
+
+# Calculate average Elo rating over time
+mean(nba_elo_data$elo_n)
+
+# Do the same, using pipes
+nba_elo_data %>% summarize(avg_elo = mean(elo_n))
+```
+
+_Wait, what? Piping requires writing more code?!_
+
+Hang on a second, this example is just meant to illustrate how the `%>%` operator works. Here the pipe is passing the `nba_elo_data` dataframe to the `summarize()` function (from the `dplyr` package). Not having to specify the dataframe you're operating on for each function will come in handy when you're calling multiple functions. 
+
+Let's continue to work with the `nba_elo_data` dataset, and continue using basic `dplyr` functions but writing code with and without pipes.  First, let's calculate the highest Elo rating for each team -- or franchise, really -- by grouping each game according to the `fran_id` column. Notice that with pipes, you can place each piece of code on a new line, as long as the line ends with the `%>%` operator.
+
+```{r cache=TRUE}
+library(tidyverse)
+
+# Code without pipes
+summarize(group_by(nba_elo_data, fran_id), best_elo = max(elo_n))
+
+# Code with pipes
+nba_elo_data %>% 
+  group_by(fran_id) %>% 
+  summarize(best_elo = max(elo_n))
+```
+
+_Ahhh_, see? The code with pipes is far easier on the eye. We can take this point a step further: let's filter out all the games before 1980 and then sort the resulting dataframe from highest to lowest peak franchine Elo rating. Notice how ugly the nested code becomes when the pipes aren't used.
+
+```{r cache=TRUE}
+library(tidyverse)
+
+# Code without pipes
+arrange(summarize(group_by(filter(nba_elo_data, year_id >= 1980), fran_id), best_elo = max(elo_n)), desc(best_elo))
+
+# Code with pipes
+nba_elo_data %>% 
+  filter(year_id >= 1980) %>% 
+  group_by(fran_id) %>% 
+  summarize(best_elo = max(elo_n)) %>% 
+  arrange(desc(best_elo))
+```
+The fist bit of code is so messy and hard to understand that I made a mistake coding this example!
+
+Piping is the key to clear, readable R code for data science.
+
+### The right match
+
+Another common R stylistic pitfall is misuing the `match()` function, either by not using the more readable `%in%` operator or by using it to join data between different dataframes.
+
+The `match()` function is very useful. It takes as its input two vectors and returns the indices where matches of the elements in the first vector (if any) are found in the elements of the second vector. 
+
+```{r}
+large_cities <- c("New York", "Los Angeles", "Chicago", "Houston", "Philadelphia", "Phoenix")
+
+warm_cities <- c("Miami", "New Orleans", "Houston", "Phoenix", "San Diego", "Los Angeles")
+
+match(large_cities, warm_cities)
+match(warm_cities, large_cities)
+```
+
+In many cases, though, you'll want to use the `%in%` operator for matching, rather than the `match()` function itself, because it's aesthetically nicer. But the `%in%` operator works a little differently, returning a _logical_ vector, with `TRUE`/`FALSE` as to whether there is a match at all.
+
+```{r}
+large_cities <- c("New York", "Los Angeles", "Chicago", "Houston", "Philadelphia", "Phoenix")
+
+warm_cities <- c("Miami", "New Orleans", "Houston", "Phoenix", "San Diego", "Los Angeles")
+
+large_cities %in% warm_cities
+```
+
+Using the `match()` function to join data to a dataframe is a mistake I often made in my early days of R coding. Taking two dataframes -- `birthdays` and `cities` -- and joining the later data by the `name` column. Here is the ugly way to do: using `match()` to subset out the `city` column in the correct order for the `birthdays` dataframe:
+
+```{r}
+birthdays <- data.frame(
+  name = c('Steve', 'Laura', 'Kim'),
+  birthday = c('2/17/71', '10/4/83', '6/28/66')
+)
+
+cities <- data.frame(
+  name = c('Laura', 'Kim', 'Steve'),
+  city = c('Chicago', 'Houston', 'Seattle')
+)
+
+# Find match between two dataframes according to name column
+match(birthdays$name, cities$name)
+
+# Use that match to join city data to birthdays dataframe
+birthdays$city <- cities[match(birthdays$name, cities$name),]$city
+
+birthdays
+```
+
+Ugh. That was terrible. Don't do this. Why? You can easily flip the order of the two vectors in your match function and it will it return the data sorted incrrectly. But, more importantly, there is a stylically superior way to join data -- using the join-functions from the `dplyr` package.
+
+Here I'll use the `left_join()` function to extract join the `city` column from `cities` to the `birthdays` dataframe. All you must do is specify the `by =` parameter (which is the column or columns to join by).
+
+```{r}
+library(dplyr)
+
+birthdays <- data.frame(
+  name = c('Steve', 'Laura', 'Kim'),
+  birthday = c('2/17/71', '10/4/83', '6/28/66')
+)
+
+cities <- data.frame(
+  name = c('Laura', 'Kim', 'Steve'),
+  city = c('Chicago', 'Houston', 'Seattle')
+)
+
+birthdays %>% 
+  left_join(cities, by = 'name')
+```
+
+There are other join functions in `dplyr` -- `right_join()`, `inner_join()`, `outer_join()` and so on. Use those to join data across separate dataframes. Don't use `match()`. The benefits of using the join-functions are several. There is less risk of a "silent" error, for one. But it's also far easier to interpret. 

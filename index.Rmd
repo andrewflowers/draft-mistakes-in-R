@@ -1,0 +1,13 @@
+---
+title: "How To Make Mistakes In R"
+author: "Andrew Flowers"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+# github-repo: andrewflowers/draft-mistakes-in-R
+description: "This is a draft of How To Make Mistakes In R, by Andrew Flowers -- a guide to common screwups that R beginners make."
+output:
+  bookdown::gitbook: default
+  bookdown::pdf_book: default
+  bookdown::word_book: default
+---

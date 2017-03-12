@@ -1,0 +1,55 @@
+---
+title: "Introduction"
+author: "Andrew Flowers"
+date: "2/27/2017"
+bookdown::gitbook:
+    lib_dir: assets
+    split_by: section
+bookdown::pdf_book:
+    keep_tex: yes
+documentclass: book
+---
+# Introduction
+
+### R is great, but it's also weird
+ 
+R was built by and for statisticians, so it’s not like other programming languages. Its idiosyncrasies can be a source of deep frustration for beginners. But I’d argue there is no better tool for data analysis.
+
+That’s why I’ve written this free ebook **How To Make Mistakes In R** for O’Reilly. It’s modeled after the excellent [**How To Make Mistakes In Python**](http://www.oreilly.com/programming/free/how-to-make-mistakes-in-python.csp), by [Mike Pirnat](http://mike.pirnat.com/).
+
+The target audience is all R programmers, from those just starting out all the way to the advanced developers. It’ll cover mistakes in setup, silly things, style no-no's, statistics and surprises, too. I’m especially qualified to write this book because I’ve made so many R mistakes in my own work.
+
+### R is great for data science
+
+The focus of this book is _not_ on programming in R as much as it is using R for data science. This is where R is at its best: an environment for interactively exploring and analyzing data.
+
+Thus we'll often be working with real datasets. To access those datasets, go to this book's GitHub [repository](https://github.com/andrewflowers/how-to-make-mistakes-in-R).
+
+### What to do when you make a mistake in R?
+
+Making mistakes in programming is perfectly normal. It's to be expected, really, in the course of anyone's workflow. But how should you react when you see an R tells you that you've made an error and you don't understand the error message.
+
+The first step should be **Google the error message**. Yes, that's my advice. As simple as it sounds, many programmers -- especially beginners -- go hunting for answers by asking others or searching R documentation. They don't go to the source of their problem: the error message.
+
+```{r error = TRUE}
+sum(1, 2, 'hello')
+```
+
+And often by Googling the error message you'll end up at [Stackoverflow](stackoverflow.com), the live-saving website where programmers post questions and (sometimes) get answers. Chances are: someone has already made your mistake in R before. And, hopefully, there's an answer at Stackoverflow. 
+
+But what if you're not getting an explicit error message from R, but your code isn't working as you expect. A simple place to start is to read R documentation about the functions your using. Just type into the R console your function name preface with a `?` and the function documentation will appear. Like this:
+
+```{r}
+?sum
+```
+
+After Googling and searching Stackoverflow, and examiming R documentation, other places to find for answers are [GitHub](github.com) and [Twitter](twitter.com). The `#rstats` hash tag on Twitter collects lots of useful conversations about R. 
+
+
+### Good luck and keep at it.
+
+Mistakes are inevitable in programming. Don't think you're stupid. Don't think your frustration is unusal. Frustration is to be expected. Nothing is wrong with you. You just need to keep at it.
+
+
+
+
